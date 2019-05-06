@@ -139,6 +139,11 @@ void TargetTracker::SetTotZDimension(Double_t Zdim)
   ZDimension = Zdim;
 }
 
+void TargetTracker::SetTotXDimension(Double_t Xdim)
+{
+  XDimension = Xdim;
+}
+
 void TargetTracker::SetNumberTT(Int_t n)
 {
   fNTT =n;
@@ -168,9 +173,12 @@ void TargetTracker::ConstructGeometry()
     
     for(int l = 0; l < fNTT; l++)
       {
-	volTarget->AddNode(volTT,n,new TGeoTranslation(0,0, d_tt + l*(TTrackerZ +CellWidth)));
-	zpos = d_tt+l*(TTrackerZ +CellWidth);
-	n++;
+        for(int ch = 0; ch < 10; ch++)
+          {
+        	volTarget->AddNode(volTT,n,new TGeoTranslation(-TTrackerX*5 + TTrackerX/2 + ch*TTrackerX,0, d_tt + l*(TTrackerZ +CellWidth)));
+        	zpos = d_tt+l*(TTrackerZ +CellWidth);
+        	n++;
+          }
       }
 }
 

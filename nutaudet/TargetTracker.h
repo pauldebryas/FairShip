@@ -36,6 +36,7 @@ public:
     void SetTargetTrackerParam(Double_t TTX, Double_t TTY, Double_t TTZ);
     void SetBrickParam(Double_t CellW);
     void SetTotZDimension(Double_t Zdim);
+    void SetTotXDimension(Double_t Xdim);
     void DecodeTTID(Int_t detID, Int_t &NTT);
     void SetNumberTT(Int_t n);
     void SetDesign(Int_t Design);
@@ -111,7 +112,8 @@ protected:
     Double_t TTrackerZ;
 
     Double_t CellWidth; //dimension of the cell containing brick and CES
-    Double_t ZDimension; //Dimension of the TTs+bricks total volume
+    Double_t ZDimension; //Dimension of the TTs+bricks total volume (Z direction)
+    Double_t XDimension; //Dimension of the TTs+bricks total volume (X direction)
     
     Int_t fNTT; //number of TT
 

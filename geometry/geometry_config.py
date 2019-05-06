@@ -687,7 +687,7 @@ with ConfigRegistry.register_config("basic") as c:
  #TargetTrackers!
     c.NuTauTT = AttrDict(z=0*u.cm)
     c.NuTauTT.design = nuTauTargetDesign
-    c.NuTauTT.TTX = c.NuTauTarget.xdim
+    c.NuTauTT.TTX = c.NuTauTarget.xdim/10
     c.NuTauTT.TTY = c.NuTauTarget.ydim
     c.NuTauTT.TTZ= 6.0*u.cm
     c.NuTauTT.n = c.NuTauTarget.wall+1
