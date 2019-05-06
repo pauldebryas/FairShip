@@ -109,7 +109,7 @@ def configure(run,ship_geo):
    slices_length.push_back(  eval("ship_geo.target.L"+str(i)))
    slices_material.push_back(eval("ship_geo.target.M"+str(i)))
   TargetStation.SetLayerPosMat(ship_geo.target.xy,slices_length,slices_material)
- detectorList.append(TargetStation)
+# detectorList.append(TargetStation)
 
  if ship_geo.muShieldDesign==1:
   MuonShield = ROOT.ShipMuonShield("MuonShield",ship_geo.muShieldDesign,"ShipMuonShield",ship_geo.muShield.z,ship_geo.muShield.dZ0,ship_geo.muShield.length,\
@@ -141,7 +141,7 @@ def configure(run,ship_geo):
  elif ship_geo.muShieldDesign == 8:
   MuonShield = ROOT.ShipMuonShield(ship_geo.muShieldGeo)
  
- detectorList.append(MuonShield)
+# detectorList.append(MuonShield)
 
  if not hasattr(ship_geo,"magnetDesign"):
  # backward compatibility
@@ -164,7 +164,7 @@ def configure(run,ship_geo):
   else: 
    magnet = ROOT.ShipMagnet("Magnet","SHiP Magnet",ship_geo.Bfield.z, ship_geo.magnetDesign, ship_geo.Bfield.x, ship_geo.Bfield.y, ship_geo.cave.floorHeightTankB)
  else: magnet = ROOT.ShipMagnet("Magnet","SHiP Magnet",ship_geo.Bfield.z)
- detectorList.append(magnet)
+# detectorList.append(magnet)
   
  Veto = ROOT.veto("Veto", ROOT.kTRUE)   # vacuum tank
  Veto.SetLiquidVeto(1)  # liquid scintillator
@@ -188,7 +188,7 @@ def configure(run,ship_geo):
                             ship_geo.Veto.outerSupportMed,ship_geo.Veto.decayMed,\
                             ship_geo.Veto.rib,ship_geo.Veto.ribMed)
 
- detectorList.append(Veto)
+# detectorList.append(Veto)
  if hasattr(ship_geo,'tauMudet'): # don't support old designs
 
   if ship_geo.muShieldDesign not in [2,3,4] and hasattr(ship_geo.tauMudet,'Xtot'):
@@ -337,7 +337,7 @@ def configure(run,ship_geo):
    Strawtubes.SetTr34YDim(ship_geo.Yheight/2.)    
   # for the digitizing step
   Strawtubes.SetStrawResolution(getParameter("strawtubes.v_drift",ship_geo,latestShipGeo),getParameter("strawtubes.sigma_spatial",ship_geo,latestShipGeo) )
-  detectorList.append(Strawtubes)
+#  detectorList.append(Strawtubes)
 
  if ship_geo.EcalOption == 1:  # shashlik design TP 
   if ship_geo.preshowerOption > 0 :
@@ -348,10 +348,10 @@ def configure(run,ship_geo):
    Preshower.SetYMax(ship_geo.Preshower.YMax)
    Preshower.SetActiveThickness(ship_geo.Preshower.ActiveThickness)
    Preshower.SetFilterThickness2(ship_geo.Preshower.FilterThickness0,ship_geo.Preshower.FilterThickness1)
-   detectorList.append(Preshower)
+#   detectorList.append(Preshower)
 
   ecal,EcalZSize = posEcal(ship_geo.ecal.z,ship_geo.ecal.File)
-  detectorList.append(ecal)
+#  detectorList.append(ecal)
 
  if ship_geo.EcalOption == 2:  # splitCal with pointing information
   SplitCal = ROOT.splitcal("SplitCal", ROOT.kTRUE)
@@ -366,14 +366,14 @@ def configure(run,ship_geo):
   SplitCal.SetNModules(x.NModulesInX, x.NModulesInY)
   SplitCal.SetNStrips(x.NStripsPerModule)
   SplitCal.SetStripSize(x.StripHalfWidth, x.StripHalfLength)
-  detectorList.append(SplitCal)
+#  detectorList.append(SplitCal)
 
  if not ship_geo.HcalOption < 0:
   hcal,HcalZSize = posHcal(ship_geo.hcal.z,ship_geo.hcal.File,ship_geo.HcalOption)
   if ship_geo.HcalOption!=2 and abs(ship_geo.hcal.hcalSpace -  HcalZSize) > 10*u.cm:
     print 'mismatch between hcalsize in geo file and python configuration'
     print ship_geo.hcal.hcalSpace -  HcalZSize, ship_geo.hcal.hcalSpace , HcalZSize
-  detectorList.append(hcal)
+#  detectorList.append(hcal)
  Muon = ROOT.muon("Muon", ROOT.kTRUE)
  Muon.SetZStationPositions(ship_geo.MuonStation0.z, ship_geo.MuonStation1.z,ship_geo.MuonStation2.z,ship_geo.MuonStation3.z)
  Muon.SetZFilterPositions(ship_geo.MuonFilter0.z, ship_geo.MuonFilter1.z,ship_geo.MuonFilter2.z)
@@ -381,7 +381,7 @@ def configure(run,ship_geo):
  Muon.SetYMax(ship_geo.Muon.YMax)
  Muon.SetActiveThickness(ship_geo.Muon.ActiveThickness)
  Muon.SetFilterThickness(ship_geo.Muon.FilterThickness)
- detectorList.append(Muon)
+# detectorList.append(Muon)
 
  timeDet = ROOT.TimeDet("TimeDet", ROOT.kTRUE)
  timeDet.SetZposition(ship_geo.TimeDet.z)
@@ -389,7 +389,7 @@ def configure(run,ship_geo):
  timeDet.SetBarZ(ship_geo.TimeDet.zBar)
  timeDet.SetSizeX(2 * ship_geo.TimeDet.DX)
  timeDet.SetSizeY(2 * ship_geo.TimeDet.DY)
- detectorList.append(timeDet)
+# detectorList.append(timeDet)
 
 #-----   Magnetic field   -------------------------------------------
  if not hasattr(ship_geo.Bfield,"fieldMap"):

@@ -8,7 +8,7 @@ import shipRoot_conf
 import rootUtils as ut
 from ShipGeoConfig import ConfigRegistry
 
-debug = 0  # 1 print weights and field
+debug = 1  # 1 print weights and field
            # 2 make overlap check
 dryrun = False # True: just setup Pythia and exit
 
@@ -41,7 +41,10 @@ RPVSUSY      = False
 RPVSUSYbench = 2
 
 eventDisplay = False
-inputFile    = "/eos/experiment/ship/data/Charm/Cascade-parp16-MSTP82-1-MSEL4-978Bpot.root"
+
+# inputFile    = "/eos/experiment/ship/data/Charm/Cascade-parp16-MSTP82-1-MSEL4-978Bpot.root"
+
+inputFile    = "/panfs/graverin/FairShip_inputs/Cascade-parp16-MSTP82-1-MSEL4-978Bpot.root"
 
 defaultInputFile = True
 outputDir    = "."
@@ -217,8 +220,10 @@ if (HNL and RPVSUSY) or (HNL and DarkPhoton) or (DarkPhoton and RPVSUSY):
  sys.exit(2)
 
 if (simEngine == "Genie" or simEngine == "nuRadiography") and defaultInputFile: 
-  inputFile = "/eos/experiment/ship/data/GenieEvents/genie-nu_mu.root"
+  #inputFile = "/eos/experiment/ship/data/GenieEvents/genie-nu_mu.root"
+  inputFile = "/panfs/graverin/FairShip_inputs/genie-nu_mu.root"
             # "/eos/experiment/ship/data/GenieEvents/genie-nu_mu_bar.root"
+
 if simEngine == "muonDIS" and defaultInputFile:
   print 'input file required if simEngine = muonDIS'
   print " for example -f  /eos/experiment/ship/data/muonDIS/muonDis_1.root"
