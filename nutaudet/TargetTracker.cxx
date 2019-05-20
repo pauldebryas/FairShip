@@ -144,6 +144,11 @@ void TargetTracker::SetTotXDimension(Double_t Xdim)
   XDimension = Xdim;
 }
 
+void TargetTracker::SetThicnessRibbon(Double_t Thicknessribbon)
+{
+  ZRibbon = Thicknessribbon;
+}
+
 void TargetTracker::SetNumberTT(Int_t n)
 {
   fNTT =n;
@@ -154,32 +159,71 @@ void TargetTracker::SetDesign(Int_t Design)
   fDesign = Design;
 }
 
+void TargetTracker::SetNumberXChannel(Int_t NumberOfXChannel)
+{
+  chX = NumberOfXChannel;
+}
+
+void TargetTracker::SetNumberYChannel(Int_t NumberOfYChannel)
+{
+  chY = NumberOfYChannel;
+}
 
 void TargetTracker::ConstructGeometry()
 {
-
-  InitMedium("TTmedium");
-  TGeoMedium *medium =gGeoManager->GetMedium("TTmedium");
   TGeoVolume *volTarget=gGeoManager->GetVolume("volTarget");
 
-  TGeoBBox *TTBox = new TGeoBBox("TTBox",TTrackerX/2, TTrackerY/2, TTrackerZ/2);
-    TGeoVolume *volTT = new TGeoVolume("TargetTracker",TTBox,medium);
-    volTT->SetLineColor(kBlue - 1);
-    AddSensitiveVolume(volTT);
+  InitMedium("TTmedium");
+  TGeoMedium *mediumTT =gGeoManager->GetMedium("TTmedium");
 
-    Double_t d_tt = -ZDimension/2 + TTrackerZ/2;
-    Double_t zpos = 0;
-    Int_t n = 0;
+  InitMedium("vacuum");
+  TGeoMedium *vacuum =gGeoManager->GetMedium("vacuum");
+
+  TGeoBBox *TTBox = new TGeoBBox("TTBox",TTrackerX/2, TTrackerY/2, TTrackerZ/2);
+  TGeoVolume *volTT = new TGeoVolume("TargetTracker",TTBox,vacuum);
+  volTT->SetLineColor(kBlue);
+
+  TGeoBBox *ribbonX = new TGeoBBox("ribbonX",TTrackerX/2, TTrackerY/2, ZRibbon/2);
+  TGeoVolume *volribbonX = new TGeoVolume("RibbonXVolume",ribbonX,vacuum);
+  volribbonX->SetLineColor(kBlue);
+
+  TGeoBBox *ribbonY = new TGeoBBox("ribbonY",TTrackerX/2, TTrackerY/2, ZRibbon/2);
+  TGeoVolume *volribbonY = new TGeoVolume("RibbonYVolume",ribbonY,vacuum);
+  volribbonY->SetLineColor(kBlue);
+
+  TGeoBBox *Honneycomb = new TGeoBBox("Honneycomb",TTrackerX/2, TTrackerY/2, TTrackerZ/2-2*ZRibbon/2);
+  TGeoVolume *volhonneycomb = new TGeoVolume("HonneycombVolume",Honneycomb,vacuum);
+  volhonneycomb->SetLineColor(kBlue);
+
+  TGeoBBox *channelX = new TGeoBBox("channelX",TTrackerX/(2*chX), TTrackerY/2, ZRibbon/2);
+  TGeoVolume *volchannelX = new TGeoVolume("ChannelXVolume",channelX,mediumTT);
+  volchannelX->SetLineColor(kGreen);
+  AddSensitiveVolume(volchannelX);
+
+  TGeoBBox *channelY = new TGeoBBox("channelY",TTrackerX/2, TTrackerY/(2*chY), ZRibbon/2);
+  TGeoVolume *volchannelY = new TGeoVolume("ChannelYVolume",channelY,mediumTT);
+  volchannelY->SetLineColor(kRed);
+  AddSensitiveVolume(volchannelY);
+
+  for(int m = 0; m < chX; m++)
+    {
+        volribbonX->AddNode(volchannelX,m,new TGeoTranslation(-TTrackerX/2+TTrackerX/(2*chX)+m*TTrackerX/chX,0,0));
+    }
+
+  for(int m = 0; m < chY; m++)
+    {
+        volribbonY->AddNode(volchannelY,m,new TGeoTranslation(0,-TTrackerY/2+TTrackerY/(2*chY)+m*TTrackerY/chY,0));
+    }
+
+  volTT->AddNode(volribbonX,1,new TGeoTranslation(0,0,-TTrackerZ/2+ZRibbon/2));
+  volTT->AddNode(volribbonY,2,new TGeoTranslation(0,0,TTrackerZ/2-ZRibbon/2));
+  volTT->AddNode(volhonneycomb,3,new TGeoTranslation(0,0,0)); 
     
-    for(int l = 0; l < fNTT; l++)
-      {
-        for(int ch = 0; ch < 10; ch++)
-          {
-        	volTarget->AddNode(volTT,n,new TGeoTranslation(-TTrackerX*5 + TTrackerX/2 + ch*TTrackerX,0, d_tt + l*(TTrackerZ +CellWidth)));
-        	zpos = d_tt+l*(TTrackerZ +CellWidth);
-        	n++;
-          }
-      }
+  for(int l = 0; l < fNTT; l++)
+    {
+        volTarget->AddNode(volTT,l,new TGeoTranslation(0,0, -ZDimension/2 + TTrackerZ/2 + l*(TTrackerZ +CellWidth)));
+    }
+
 }
 
 Bool_t TargetTracker::ProcessHits(FairVolume* vol)
@@ -209,7 +253,6 @@ Bool_t TargetTracker::ProcessHits(FairVolume* vol)
 	Int_t MaxLevel = gGeoManager->GetLevel();
 	const Int_t MaxL = MaxLevel;
        	//cout << gMC->CurrentVolPath()<< endl;
-	
 
 	const char *name;
 	
@@ -222,11 +265,16 @@ Bool_t TargetTracker::ProcessHits(FairVolume* vol)
 	Int_t pdgCode = p->GetPdgCode();
 
         TLorentzVector Pos; 
-        gMC->TrackPosition(Pos); 
+        gMC->TrackPosition(Pos);
         Double_t xmean = (fPos.X()+Pos.X())/2. ;      
         Double_t ymean = (fPos.Y()+Pos.Y())/2. ;      
         Double_t zmean = (fPos.Z()+Pos.Z())/2. ;     
         
+
+
+        cout << "| fVolumeID = " << fVolumeID << "   | fMotherID = " << fMotherID <<  endl;
+
+
 
 	AddHit(fTrackID,fVolumeID, TVector3(xmean, ymean,  zmean),
                TVector3(fMom.Px(), fMom.Py(), fMom.Pz()), fTime, fLength,

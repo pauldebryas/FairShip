@@ -40,8 +40,10 @@ public:
     void DecodeTTID(Int_t detID, Int_t &NTT);
     void SetNumberTT(Int_t n);
     void SetDesign(Int_t Design);
+    void SetThicnessRibbon(Double_t Thicknessribbon);
+    void SetNumberXChannel(Int_t NumberOfXChannel);
+    void SetNumberYChannel(Int_t NumberOfYChannel);    
 
-    
     /**      Initialization of the detector is done here    */
     virtual void Initialize();
     
@@ -111,14 +113,16 @@ protected:
     Double_t TTrackerY;
     Double_t TTrackerZ;
 
-    Double_t CellWidth; //dimension of the cell containing brick and CES
+    Double_t CellWidth;  //dimension of the cell containing brick and CES
     Double_t ZDimension; //Dimension of the TTs+bricks total volume (Z direction)
     Double_t XDimension; //Dimension of the TTs+bricks total volume (X direction)
-    
+    Double_t ZRibbon;    //Thickness of ribbon layer (Z dimension)
+
     Int_t fNTT; //number of TT
 
     Int_t fDesign;
-
+    Int_t chX;   // number of X channels
+    Int_t chY;   // number of Y channels
     
     Int_t InitMedium(const char* name);
     

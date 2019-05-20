@@ -269,6 +269,10 @@ def configure(run,ship_geo):
    NuTauTT.SetTargetTrackerParam(ship_geo.NuTauTT.TTX, ship_geo.NuTauTT.TTY, ship_geo.NuTauTT.TTZ)
    NuTauTT.SetBrickParam(ship_geo.NuTauTarget.CellW)
    NuTauTT.SetTotZDimension(ship_geo.NuTauTarget.zdim)
+   NuTauTT.SetTotXDimension(ship_geo.NuTauTarget.xdim)
+   NuTauTT.SetThicnessRibbon(ship_geo.NuTauTT.Thicknessribbon)
+   NuTauTT.SetNumberXChannel(ship_geo.NuTauTT.NumberofXchannel)
+   NuTauTT.SetNumberYChannel(ship_geo.NuTauTT.NumberofYchannel)
    NuTauTT.SetNumberTT(ship_geo.NuTauTT.n)
 
   #method of nutau target that must be called after TT parameter definition
